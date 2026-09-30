@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
     private final RateLimitService rateLimitService;
+
     private final PasswordEncoder passwordEncoder;
 
     @Value("${max-register-attempts-per-ip}")
