@@ -1,16 +1,12 @@
-package example.redis.auth.models;
-
+package example.redis.auth.model;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
-public class RegisterRequest {
+public class LoginRequest {
     @NotBlank(message = "Username é obrigatório")
     private String username;
-
-    @NotBlank(message = "Email é obrigatório")
-    private String email;
 
     @NotBlank(message = "Senha é obrigatória")
     private String password;

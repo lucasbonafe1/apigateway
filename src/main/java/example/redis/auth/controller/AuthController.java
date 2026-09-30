@@ -1,9 +1,9 @@
-package example.redis.auth.controllers;
+package example.redis.auth.controller;
 
-import example.redis.auth.models.LoginRequest;
-import example.redis.auth.models.LoginResponse;
-import example.redis.auth.models.RegisterRequest;
-import example.redis.auth.services.interfaces.AuthService;
+import example.redis.auth.model.LoginRequest;
+import example.redis.auth.model.LoginResponse;
+import example.redis.auth.model.RegisterRequest;
+import example.redis.auth.domain.interfaces.AuthService;
 import example.redis.auth.util.RequestUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;

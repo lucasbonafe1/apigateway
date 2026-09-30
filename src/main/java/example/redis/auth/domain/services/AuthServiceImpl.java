@@ -1,12 +1,12 @@
-package example.redis.auth.services;
+package example.redis.auth.domain.services;
 
-import example.redis.auth.models.LoginRequest;
-import example.redis.auth.models.LoginResponse;
-import example.redis.auth.models.RegisterRequest;
-import example.redis.auth.models.User;
-import example.redis.auth.repositories.UserRepository;
-import example.redis.auth.services.interfaces.AuthService;
-import example.redis.auth.services.interfaces.RateLimitService;
+import example.redis.auth.model.LoginRequest;
+import example.redis.auth.model.LoginResponse;
+import example.redis.auth.model.RegisterRequest;
+import example.redis.auth.model.User;
+import example.redis.auth.repository.UserRepository;
+import example.redis.auth.domain.interfaces.AuthService;
+import example.redis.auth.domain.interfaces.RateLimitService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,6 +27,9 @@ public class AuthServiceImpl implements AuthService {
     @Value("${register-window-seconds}")
     private int registerWindowSeconds;
 
+    @Value("${base-ip-key}")
+    private String ipKey;
+
     @Override
     public LoginResponse login(LoginRequest request, String clientIp) {
         return null;
@@ -35,19 +38,20 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public void register(RegisterRequest request, String clientIp) {
         try {
-            String ipKey = "auth:register:ip:" + clientIp;
+            String userIpKey = ipKey + clientIp;
 
-            if (!rateLimitService.isAllowedCustomKey(ipKey, maxRegisterAttemptsPerIp, registerWindowSeconds)) {
+            if (!rateLimitService.isAllowedCustomKey(userIpKey, maxRegisterAttemptsPerIp, registerWindowSeconds)) {
                 log.warn("[REGISTER] Rate limit excedido para IP: {}", clientIp);
 
-                throw new RateLimitExceededException("Muitas tentativas de cadastro a partir deste IP.", maxRegisterAttemptsPerIp, registerWindowSeconds);
+//                Descomentar quando implementar globalException
+//                throw new RateLimitExceededException("Muitas tentativas de cadastro a partir deste IP.", maxRegisterAttemptsPerIp, registerWindowSeconds);
             }
 
-            if (userRepository.findByEmail(request.getEmail()) != null) {
+            if (userRepository.existsByEmail(request.getEmail())) {
                 throw new IllegalArgumentException("Email já cadastrado");
             }
 
-            if (userRepository.findByUsername(request.getUsername()) != null) {
+            if (userRepository.existsByUsername(request.getUsername())) {
                 throw new IllegalArgumentException("Username já cadastrado");
             }
 

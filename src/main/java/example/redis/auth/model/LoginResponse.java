@@ -1,4 +1,4 @@
-package example.redis.auth.models;
+package example.redis.auth.model;
 
 import lombok.Builder;
 import lombok.Data;
